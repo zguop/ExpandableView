@@ -19,7 +19,7 @@ import view.waitou.explibrary.NestFullFlexboxLayout;
 public class MainActivity extends AppCompatActivity {
 
     private String[]        modelName  = {"ALFA", "V8", "CM", "DPPPP"};
-    private String[]        carUniques = {"444", "AAA", "BBBB", "444", "444", "444"};
+    private String[]        uniques = {"444", "AAA", "BBBB", "444", "444", "444"};
     private List<QueryInfo> mInfos     = new ArrayList<>();
     private NestFullFlexboxLayout mNestFullFlexboxLayout;
     private ExpandingList mExpandingList;
@@ -153,17 +153,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         for (int i = 0; i < modelName.length; i++) {
-            QueryInfo queryCarInfo = new QueryInfo();
-            queryCarInfo.finished = false;
-            queryCarInfo.name = modelName[i];
-            queryCarInfo.uniques = new ArrayList<>();
-            for (int j = 0; j < carUniques.length; j++) {
-                UniquesInfo carUniquesInfo = new UniquesInfo();
-                carUniquesInfo.snap = carUniques[j];
-                carUniquesInfo.delivered = false;
-                queryCarInfo.uniques.add(carUniquesInfo);
+            QueryInfo queryInfo = new QueryInfo();
+            queryInfo.finished = false;
+            queryInfo.name = modelName[i];
+            queryInfo.uniques = new ArrayList<>();
+            for (int j = 0; j < uniques.length; j++) {
+                UniquesInfo uniquesInfo = new UniquesInfo();
+                uniquesInfo.snap = uniques[j];
+                uniquesInfo.delivered = false;
+                queryInfo.uniques.add(uniquesInfo);
             }
-            mInfos.add(queryCarInfo);
+            mInfos.add(queryInfo);
         }
     }
 }

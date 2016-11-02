@@ -308,7 +308,6 @@ public class ExpandableView<T> extends RelativeLayout {
             @Override
             public void onAnimationEnd(Animator animator) {
                 isAnimating = false;
-                //如果结束的end大于了关闭的值说明是展开的状态
                 if (!status) {
                     contentLayout.setVisibility(View.GONE);
                     if (mOnBindDatas.expandableUpdataView()) {
