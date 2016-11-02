@@ -225,6 +225,9 @@ public class ExpandableView<T> extends RelativeLayout {
      * 设置箭头的view
      */
     public void setArrorAnimationView(ImageView view) {
+        if(rightIcon != null){
+            return;
+        }
         this.rightIcon = view;
     }
 
