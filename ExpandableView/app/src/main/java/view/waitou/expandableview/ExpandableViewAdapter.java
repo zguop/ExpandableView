@@ -39,9 +39,9 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder,  int position) {
         final ViewHolder holder1 = (ViewHolder) holder;
-        final QueryInfo queryCarInfo = mInfos.get(holder1.getAdapterPosition());
+        final QueryInfo queryInfo = mInfos.get(holder1.getAdapterPosition());
 
-        holder1.mExpandingList.setAdpater(queryCarInfo.uniques, new ExpandableView.OnBindDatas<UniquesInfo>() {
+        holder1.mExpandingList.setAdpater(queryInfo.uniques, new ExpandableView.OnBindDatas<UniquesInfo>() {
             @Override
             public int addClickView() {
                 return R.layout.item_expanble_querycar;
@@ -53,7 +53,7 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 TextView textView = clickHolder.getView(R.id.tv);
                 View lineView = clickHolder.getView(R.id.line_view);
 
-                textView.setText(queryCarInfo.name);
+                textView.setText(queryInfo.name);
 
                 holder1.mExpandingList.setArrorAnimationView(view);
 
@@ -70,7 +70,7 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
 
             @Override
-            public void onBindChildView(int contentPos, int contentCount, UniquesInfo carUniquesInfo, ExpandableView.ViewHolder holder) {
+            public void onBindChildView(int contentPos, int contentCount, UniquesInfo uniquesInfo, ExpandableView.ViewHolder holder) {
                 TextView tvRight = holder.getView(R.id.tv_right);
                 TextView tvLeft = holder.getView(R.id.tv_left);
                 View lineView = holder.getView(R.id.line_view);
@@ -79,13 +79,13 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 } else {
                     lineView.setVisibility(View.GONE);
                 }
-                boolean delivered = carUniquesInfo.delivered;
+                boolean delivered = uniquesInfo.delivered;
                 if (!delivered) {
                     tvRight.setText("呵呵哒");
                     tvRight.setTextColor(ActivityCompat.getColor(mContext, R.color.orange_FF8903));
                     tvLeft.setTextColor(ActivityCompat.getColor(mContext, R.color.orange_FF8903));
                 }
-                tvLeft.setText(carUniquesInfo.snap);
+                tvLeft.setText(uniquesInfo.snap);
             }
 
             @Override
