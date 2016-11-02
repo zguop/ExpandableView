@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<view.waitou.explibrary.ExpandableView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/flex_label"
+    android:layout_height="wrap_content"/>
+<!--<view.waitou.explibrary..NestFullFlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+                                                                            <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+                                                                            <!--android:id="@+id/flex_label"-->
+                                                                            <!--android:layout_width="match_parent"-->
+                                                                            <!--android:layout_height="wrap_content"-->
+                                                                            <!--android:background="#FFFFFF"-->
+                                                                            <!--app:flexDirection="column"/>-->
+<!--<view.waitou.explibrary.ExpandingList xmlns:android="http://schemas.android.com/apk/res/android"-->
+                                                                    <!--android:id="@+id/expanding_list_main"-->
+                                                                    <!--android:layout_width="match_parent"-->
+                                                                    <!--android:layout_height="wrap_content"-->
+                                                                    <!--android:focusableInTouchMode="false"-->
+                                                                    <!--android:scrollbars="none">-->
+
+
+<!--</view.waitou.explibrary..ExpandingList>-->
