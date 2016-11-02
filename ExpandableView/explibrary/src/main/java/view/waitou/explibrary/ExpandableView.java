@@ -126,25 +126,23 @@ public class ExpandableView<T> extends RelativeLayout {
         int endPosition = itemY + mFinalHeight;
         if (endPosition > mHeightPixels) {
             int delta = endPosition - mHeightPixels;
-            //可根据业务自行增加
-            ViewParent parent = getParent();
-            if (parent != null) { //一层的嵌套 获取RecyclerView
-                if (parent instanceof RecyclerView) {
-                    RecyclerView recyclerView = (RecyclerView) parent;
-                    recyclerView.smoothScrollBy(0, delta);
-                } else {
-                    ViewParent parent1 = parent.getParent();
-                    if (parent1 != null) {
-                        if (parent1 instanceof RecyclerView) { //二层的嵌套 RecyclerView
-                            RecyclerView recyclerView = (RecyclerView) parent1;
-                            recyclerView.smoothScrollBy(0, delta);
-                        } else if (parent1 instanceof ScrollView) { //或者 ScrollView
-                            ScrollView scrollView = (ScrollView) parent1;
-                            scrollView.smoothScrollTo(0, getScrollY() + delta);
-                        }
-                    }
-                }
-            }
+            scrollBy(getParent(),delta);
+        }
+    }
+
+
+    private void scrollBy(ViewParent parent,int delta){
+        if(parent == null){
+            return;
+        }
+        if(parent instanceof RecyclerView){
+            RecyclerView recyclerView = (RecyclerView) parent;
+            recyclerView.smoothScrollBy(0, delta);
+        }else if(parent instanceof ScrollView){
+            ScrollView scrollView = (ScrollView) parent;
+            scrollView.smoothScrollTo(0, delta);
+        }else {
+            scrollBy(parent.getParent(),delta);
         }
     }
 
