@@ -25,7 +25,7 @@
                  }
 
                  @Override
-                 public void onBindChildView(int contentPos, int contentCount, UniquesInfo carUniquesInfo, ExpandableView.ViewHolder holder) {
+                 public void onBindChildView(int contentPos, int contentCount, UniquesInfo uniquesInfo, ExpandableView.ViewHolder holder) {
                    //列表布局 数据绑定
                  }
 
