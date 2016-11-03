@@ -251,10 +251,10 @@ public class ExpandableView<T> extends RelativeLayout {
      */
     private void expand() {
         expandAnimator.start();
+        contentLayout.setVisibility(View.VISIBLE);
         if (rightIcon == null) {
             return;
         }
-        contentLayout.setVisibility(View.VISIBLE);
         if (expandRotateAnimation == null) {
             int x = rightIcon.getMeasuredWidth() / 2;
             int y = rightIcon.getMeasuredHeight() / 2;
