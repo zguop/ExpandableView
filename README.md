@@ -7,7 +7,7 @@
 
 
             final ExpandableView expandableView = holder.getView(R.id.item_expanble);
-             expandableView.setAdpater(queryCarInfo.uniques, new ExpandableView.OnBindDatas<UniquesInfo>() {
+             expandableView.setAdapter(queryCarInfo.uniques, new ExpandableView.OnBindDatas<UniquesInfo>() {
                 
                  @Override
                  public int addClickView() {  //添加点击的布局 
