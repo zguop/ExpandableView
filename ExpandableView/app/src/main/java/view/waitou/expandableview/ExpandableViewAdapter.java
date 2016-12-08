@@ -41,7 +41,7 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         final ViewHolder holder1 = (ViewHolder) holder;
         final QueryInfo queryInfo = mInfos.get(holder1.getAdapterPosition());
 
-        holder1.mExpandingList.setAdpater(queryInfo.uniques, new ExpandableView.OnBindDatas<UniquesInfo>() {
+        holder1.mExpandingList.setAdapter(queryInfo.uniques, new ExpandableView.OnBindListener<UniquesInfo>() {
             @Override
             public int addClickView() {
                 return R.layout.item_expanble_querycar;

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="expandableView">
+        <!--列表展开头部 位置-->
+        <attr name="exp_mobile" format="enum">
+            <!--在上面-->
+            <enum name="top" value="0"/>
+            <!--在下面-->
+            <enum name="bottom" value="1"/>
+        </attr>
+        <!--展开的动画时间-->
+        <attr name="exp_duration" format="integer" />
+    </declare-styleable>
+
+</resources>

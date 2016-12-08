@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBind(final int pos, final int itemCount, final QueryInfo queryInfo, NestFullFlexboxLayout.NestFullViewHolder holder) {
                 final ExpandableView expandableView = holder.getView(R.id.item_expanble);
-                expandableView.setAdpater(queryInfo.uniques, new ExpandableView.OnBindDatas<UniquesInfo>() {
+                expandableView.setAdapter(queryInfo.uniques, new ExpandableView.OnBindListener<UniquesInfo>() {
                     @Override
                     public int addClickView() {
                         return R.layout.item_expanble_querycar;
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onBind(int pos, int itemCount, QueryInfo queryInfo, NestFullFlexboxLayout.NestFullViewHolder holder) {
                 final ExpandableView expandableView = holder.getView(R.id.item_expanble);
-                expandableView.setAdpater(queryInfo.uniques, new ExpandableView.OnBindDatas() {
+                expandableView.setAdapter(queryInfo.uniques, new ExpandableView.OnBindListener() {
                     @Override
                     public int addClickView() {
                         return R.layout.item_expanble_querycar;
