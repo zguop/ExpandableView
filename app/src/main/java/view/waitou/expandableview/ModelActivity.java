@@ -20,7 +20,6 @@ public class ModelActivity extends AppCompatActivity {
 
 
     private String[]        modelName = {"ALFA", "V8", "CM", "DPPPP"};
-    private String[]        uniques   = {"444", "AAA", "BBBB", "444", "444", "444"};
     private List<QueryInfo> mInfos    = new ArrayList<>();
     private ExpandableView mExpandableView;
 

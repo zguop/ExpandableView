@@ -1,7 +1,7 @@
 # ExpandableView
 
 动画列表展开收起 ,列表右边的指示箭头可以再任何位置
- 当展开时如果超过屏幕的高度时父控件自动上移，滚动的父布局可以是RecyclerView,ScrollingView
+ 当展开时如果超过屏幕的高度时父控件自动上移，滚动的父布局可以是RecyclerView,ScrollView
  
 
 
@@ -36,7 +36,7 @@
              });
           }
 
-  效果图：
+### 效果图：
 
 ![这里写图片描述](Untitled20.gif)
 
