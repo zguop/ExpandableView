@@ -167,7 +167,7 @@ public class ExpandableView<T> extends LinearLayout {
 //        setMeasuredDimension(widthMeasureSpec, );
     }
 
-    public void setAdapter(List data, OnBindListener bindListener) {
+    public void setAdapter(List<T> data, OnBindListener<T> bindListener) {
         this.dataList = data;
         this.mOnBindListener = bindListener;
         initClickView();
@@ -389,7 +389,7 @@ public class ExpandableView<T> extends LinearLayout {
             public void onAnimationEnd(Animator animator) {
                 isAnimating = false;
                 if (!status) {
-                    if (mOnBindListener.expandableUpdataView()) {
+                    if (mOnBindListener.expandableUpDataView()) {
                         expandableUpdataView();
                     }
                 } else {
@@ -400,7 +400,7 @@ public class ExpandableView<T> extends LinearLayout {
             @Override
             public void onAnimationStart(Animator animator) {
                 isAnimating = true;
-                if (status && mOnBindListener.expandableUpdataView()) {
+                if (status && mOnBindListener.expandableUpDataView()) {
                     expandableUpdataView();
                 }
             }
@@ -485,7 +485,7 @@ public class ExpandableView<T> extends LinearLayout {
         void onBindChildView(int childPos, int childCount, T t, ViewHolder childHolder);
 
         //是否打开关闭 更新数据 改动UI的显示
-        boolean expandableUpdataView();
+        boolean expandableUpDataView();
     }
 
     public static class ViewHolder {

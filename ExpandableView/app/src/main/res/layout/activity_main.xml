@@ -8,19 +8,12 @@
               android:orientation="vertical"
               tools:context="view.waitou.expandableview.MainActivity">
 
-    <view.waitou.explibrary.NestFullFlexboxLayout
-        android:id="@+id/flex_label"
+    <Button
+        android:id="@+id/btn"
+        android:layout_marginBottom="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        app:flexDirection="column"/>
-
-    <view.waitou.explibrary.ExpandingList
-        android:id="@+id/expanding_list_main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"/>
-
+        android:text="to_Activity"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"

@@ -89,7 +89,7 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
 
             @Override
-            public boolean expandableUpdataView() {
+            public boolean expandableUpDataView() {
                 return true;
             }
         });
