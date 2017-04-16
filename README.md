@@ -3,6 +3,23 @@
 动画列表展开收起 ,列表右边的指示箭头可以再任何位置
  当展开时如果超过屏幕的高度时父控件自动上移，滚动的父布局可以是RecyclerView,ScrollView
  
+[![](https://jitpack.io/v/zguop/ExpandableView.svg)](https://jitpack.io/#zguop/ExpandableView)
+
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url "https://jitpack.io" }
+	}
+}
+```
+
+Then, add the library to your module `build.gradle`
+```gradle
+dependencies {
+	        compile 'com.github.zguop:ExpandableView:v1.0.0'
+	}
+```
 
 
 
@@ -38,6 +55,6 @@
 
 ### 效果图：
 
-![这里写图片描述](Untitled20.gif)
+![这里写图片描述](Untitled20.gif)    ![这里写图片描述](Untitled21.gif)
 
-![这里写图片描述](Untitled21.gif)
+
