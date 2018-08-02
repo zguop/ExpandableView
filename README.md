@@ -5,19 +5,11 @@
  
 [![](https://jitpack.io/v/zguop/ExpandableView.svg)](https://jitpack.io/#zguop/ExpandableView)
 
-```gradle
-allprojects {
-	repositories {
-		...
-		maven { url "https://jitpack.io" }
-	}
-}
-```
 
 Then, add the library to your module `build.gradle`
 ```gradle
 dependencies {
-	        compile 'com.github.zguop:ExpandableView:v1.0.0'
+	        compile 'com.to.aboomy:explibrary:1.1.0'
 	}
 ```
 
