@@ -9,44 +9,47 @@
 Then, add the library to your module `build.gradle`
 ```gradle
 dependencies {
-	        compile 'com.to.aboomy:explibrary:2.0.1'
-	}
+	 compile 'com.to.aboomy:explibrary:2.0.1'
+}
 ```
 
-            final ExpandableView expandableView = holder.getView(R.id.item_expanble);
-            expandableView.setAdapter(queryInfo.uniques.size(), new ExpandableView.OnBindListener() {
+### 使用方式
 
-            @Override
-            public View bindTitleView(View titleView) {
-                if (titleView == null) {
-                    titleView = View.inflate(mContext, R.layout.item_expanble_querycar, null);
-                }
-                //设置箭头id
-                holder1.mExpandingList.setArrowAnimationView(R.id.iv_arrow);
-                
-                //头部数据绑定...
+```groovy
+    final ExpandableView expandableView = holder.getView(R.id.item_expanble);
+    expandableView.setAdapter(queryInfo.uniques.size(), new ExpandableView.OnBindListener() {
 
-                ...
-                return titleView;
-            }
+    @Override
+    public View bindTitleView(View titleView) {
+        if (titleView == null) {
+            titleView = View.inflate(mContext, R.layout.item_expanble_querycar, null);
+        }
+        //设置箭头id
+        holder1.mExpandingList.setArrowAnimationView(R.id.iv_arrow);
+        
+        //头部数据绑定...
 
-            @Override
-            public View bindChildView(int childPos, View child) {
-                if(child == null){
-                    child = View.inflate(mContext,R.layout.item_expanble_caruniques,null);
-                }
-                //列表布局 数据绑定
-                ...
-                return child;
-            }
+        ...
+        return titleView;
+    }
 
-            //返回true 列表展开收起 都将重新调用 bindTitleView bindChildView方法 适用于数据变化
-            @Override
-            public boolean expandableUpDataView() {
-                return true;
-            }
-        });
+    @Override
+    public View bindChildView(int childPos, View child) {
+        if(child == null){
+            child = View.inflate(mContext,R.layout.item_expanble_caruniques,null);
+        }
+        //列表布局 数据绑定
+        ...
+        return child;
+    }
 
+    //返回true 列表展开收起 都将重新调用 bindTitleView bindChildView方法 适用于数据变化
+    @Override
+    public boolean expandableUpDataView() {
+        return true;
+    }
+});
+```
 ### 效果图：
 
 ![这里写图片描述](Untitled20.gif)    ![这里写图片描述](Untitled21.gif)
