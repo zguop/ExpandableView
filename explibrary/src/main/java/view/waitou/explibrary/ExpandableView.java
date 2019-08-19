@@ -5,21 +5,15 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.SparseArray;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -32,36 +26,32 @@ import java.util.List;
  * 列表展开收起view
  */
 
-public class ExpandableView<T> extends LinearLayout {
+public class ExpandableView extends LinearLayout {
 
     private static final float DEGREES = 180;
 
     public static final int MOBILE_TOP = 0;
     public static final int MOBILE_BUM = 1;
 
-    private int closePositionSize = 0; ////当前显示的view大小
-
-    private LayoutInflater    mInflater;
-    private List<ViewHolder>  titleHolderList;
-    private List<ViewHolder>  childHolderList;
-    private List<Integer>     mChildSizeList;           //记录每个子孩子的高度--叠加的
-    private RelativeLayout    titleLayout;              //点击的view
-    private LinearLayout      childLayout;              //内容隐藏的view
-    private ImageView         rightIcon;                //右边点击箭头 ，需进行set设置
-    private ValueAnimator     expandAnimator;           //列表展开的动画
-    private ValueAnimator     collapseAnimator;         //列表收起的动画
-    private RotateAnimation   expandRotateAnimation;    //箭头展开的旋转动画
-    private RotateAnimation   collapseRotateAnimation;  //箭头收起的旋转动画
-    private List<T>           dataList;                 //数据集
-    private OnBindListener<T> mOnBindListener;          //所要实现的接口
-    private int               duration;                 //动画时间
-    private int               mFinalHeight;             //子列表的最大高度
-    private int               mHeightPixels;            //屏幕的高度
-    private int               expMobile;                //列表模式
-    private boolean           isAnimating;              //动画是否在执行
-    private boolean           isExpanded;               //列表是否展开
-    private boolean           isArranged;               //测量后的初始化 ，只进行一次
-    private boolean           isCalculatedSize;         //是否进入测量的控制
+    private View titleView;
+    private List<View> childHolderList;
+    private List<Integer> childSizeList;             //记录每个子孩子的高度--叠加的
+    private RelativeLayout titleLayout;              //点击的view
+    private LinearLayout childLayout;                //内容隐藏的view
+    private ValueAnimator expandAnimator;            //列表展开的动画
+    private ValueAnimator collapseAnimator;          //列表收起的动画
+    private OnBindListener mOnBindListener;          //所要实现的接口
+    private int rightIconViewId;                     //右边点击箭头 ，需进行set设置
+    private int dataCount;                           //数据集
+    private int duration;                            //动画时间
+    private int closePositionSize;                   //当前显示的view高度
+    private int mFinalHeight;                        //子列表的最大高度
+    private int mHeightPixels;                       //屏幕的高度
+    private int expMobile;                           //列表模式
+    private int keepChild;                           //固定多少个子View个数
+    private boolean isAnimating;                     //动画是否在执行
+    private boolean isExpanded;                      //列表是否展开
+    private boolean isCalculatedSize;                //是否进入测量的控制
 
     public ExpandableView(Context context) {
         this(context, null);
@@ -73,11 +63,9 @@ public class ExpandableView<T> extends LinearLayout {
 
     public ExpandableView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mInflater = LayoutInflater.from(context);
         mHeightPixels = context.getResources().getDisplayMetrics().heightPixels;
-        titleHolderList = new ArrayList<>();
         childHolderList = new ArrayList<>();
-        mChildSizeList = new ArrayList<>();
+        childSizeList = new ArrayList<>();
         init(context, attrs, defStyle);
     }
 
@@ -88,9 +76,9 @@ public class ExpandableView<T> extends LinearLayout {
         titleLayout = new RelativeLayout(context);
 
         final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.expandableView, defStyle, 0);
-        expMobile = a.getInt(R.styleable.expandableView_exp_mobile, 0);
-        duration = a.getInteger(R.styleable.expandableView_exp_duration, 300);
+                attrs, R.styleable.ExpandableView, defStyle, 0);
+        expMobile = a.getInt(R.styleable.ExpandableView_exp_mobile, 0);
+        duration = a.getInteger(R.styleable.ExpandableView_exp_duration, 300);
         a.recycle();
 
         addViewContent();
@@ -115,7 +103,7 @@ public class ExpandableView<T> extends LinearLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!isCalculatedSize) {
-            mChildSizeList.clear();
+            childSizeList.clear();
             final int childCount = childLayout.getChildCount();
             if (childCount > 0) {
                 int sumSize = 0;
@@ -124,32 +112,37 @@ public class ExpandableView<T> extends LinearLayout {
                     //测量每个子孩子的高度
                     measureChild(view, widthMeasureSpec, heightMeasureSpec);
                     if (i > 0) {
-                        sumSize = mChildSizeList.get(i - 1);
+                        sumSize = childSizeList.get(i - 1);
                     }
                     //高度添加到集合中保存
-                    mChildSizeList.add(view.getMeasuredHeight() + sumSize);
+                    childSizeList.add(view.getMeasuredHeight() + sumSize);
                 }
                 //获取当前最大的高度
-                mFinalHeight = mChildSizeList.get(childCount - 1);
+                mFinalHeight = childSizeList.get(childCount - 1);
             } else {
                 //子view没有数据 最大高度为0
                 mFinalHeight = 0;
             }
             //进入测量 必定是数据集发生变化，重新初始化动画
+
+            int layouHeight = mFinalHeight;
+
+            if (keepChild > 0 && keepChild <= childSizeList.size()) {
+                closePositionSize = childSizeList.get(keepChild - 1);
+                layouHeight = closePositionSize;
+            }
+
             initValueAnimator();
+
             //默认不展开的 因此第一次测量必定不会执行 展开情况下，如有数据变化，如新增数据，则立即设置最新的高度值
             if (isExpandable()) {
-                setLayoutSize(mFinalHeight);
+                setLayoutSize(layouHeight);
+            } else {
+                setLayoutSize(closePositionSize);
             }
             //测量开关
             isCalculatedSize = true;
-            //这里只进行一次调用的初始化 目前关闭状态下 设置子view高度为0 之后不在进行调用
-            if (!isArranged) {
-                if (!isExpandable()) {
-                    setLayoutSize(closePositionSize);
-                }
-                isArranged = true;
-            }
+
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -169,11 +162,10 @@ public class ExpandableView<T> extends LinearLayout {
 //        setMeasuredDimension(widthMeasureSpec, );
     }
 
-    public void setAdapter(List<T> data, OnBindListener<T> bindListener) {
-        this.dataList = data;
+    public void setAdapter(int dataCount, OnBindListener bindListener) {
+        this.dataCount = dataCount;
         this.mOnBindListener = bindListener;
-        initClickView();
-        initChildView();
+        expandableUpdateView();
     }
 
     /**
@@ -194,21 +186,15 @@ public class ExpandableView<T> extends LinearLayout {
     /**
      * 设置点击部分的 隐藏 显示Visibility
      */
-    public void setClickableVisibility(int visibility) {
-        if (titleLayout.getVisibility() == visibility) {
-            return;
-        }
+    public void setTitleViewVisibility(int visibility) {
         titleLayout.setVisibility(visibility);
     }
 
     /**
      * 设置箭头的view
      */
-    public void setArrorAnimationView(ImageView view) {
-        if (rightIcon != null) {
-            return;
-        }
-        this.rightIcon = view;
+    public void setArrowAnimationView(int rightIconViewId) {
+        this.rightIconViewId = rightIconViewId;
     }
 
     /**
@@ -222,72 +208,50 @@ public class ExpandableView<T> extends LinearLayout {
      * 设置动画时间，重新初始化动画
      */
     public void setDuration(int duration) {
-        if (this.duration == duration) {
-            return;
+        if (this.duration != duration) {
+            this.duration = duration;
+            initValueAnimator();
         }
-        this.duration = duration;
-        initValueAnimator();
-        expandRotateAnimation = null;
-        collapseRotateAnimation = null;
     }
 
     /**
-     * 设置保留view的个数 滑动的起始点
+     * 设置保留view的个数 滑动的起始点,例1 child的第一个位置始终显示
      */
     public void setKeepChild(final int childNumber) {
-
-        childLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public void onGlobalLayout() {
-                childLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                if (!isArranged) {
-                    return;
-                }
-                if (childNumber < 0 || childNumber > mChildSizeList.size()) {
-                    throw new IllegalArgumentException("There aren't the view having this index. size " + mChildSizeList.size());
-                }
-                int childIndexSize = mChildSizeList.get(childNumber - 1);
-                if (closePositionSize == childIndexSize) {
-                    return;
-                }
-                closePositionSize = childIndexSize;
-                initValueAnimator();
-                if (!isExpandable()) {
-                    setLayoutSize(closePositionSize);
-                    childLayout.requestLayout();
-                }
-            }
-        });
+        this.keepChild = childNumber;
     }
 
     private void initChildView() {
-        if (dataList != null && dataList.size() > 0) {
+        if (dataCount > 0) {
             int childCount = childLayout.getChildCount();
-            int dataSize = dataList.size();
-            if (dataSize < childCount) {//数据源小于现有子View，删除后面多的
-                childLayout.removeViews(dataSize, childCount - dataSize); //删除View也清缓存
-                while (childHolderList.size() > dataSize) {
+            //数据发生变化，首先删除删除后面多的View
+            if (dataCount < childCount) {
+                childLayout.removeViews(dataCount, childCount - dataCount);
+                while (childHolderList.size() > dataCount) {
                     childHolderList.remove(childHolderList.size() - 1);
                 }
             }
-            for (int i = 0; i < dataSize; i++) {
-                ViewHolder holder;
-                if (childHolderList.size() - 1 >= i) {//说明有缓存，不用inflate，否则inflate
+            for (int i = 0; i < dataCount; i++) {
+                //把现有的View传递出去
+                View holder = null;
+                if (childHolderList.size() - 1 >= i) {
                     holder = childHolderList.get(i);
-                } else {
-                    holder = new ViewHolder(mInflater.inflate(mOnBindListener.addChildView(), this, false));
-                    childHolderList.add(holder);//inflate 出来后 add进来缓存
                 }
-                mOnBindListener.onBindChildView(i, dataSize, dataList.get(i), holder);
+                View child = mOnBindListener.bindChildView(i, holder);
+                //回来的View不是之前的View，那么替换掉之前的View
+                if (holder != child) {
+                    childHolderList.remove(holder);
+                    holder = child;
+                    childHolderList.add(i, holder);
+                }
                 //如果View没有父控件 添加
-                if (holder.getConvertView().getParent() == null) {
-                    childLayout.addView(holder.getConvertView());
+                if (holder != null && holder.getParent() == null) {
+                    childLayout.addView(holder);
                 }
             }
             //数据数量发生变化时 重新测量
-            if (mChildSizeList.size() != dataSize) {
-                initLayout();
+            if (childSizeList.size() != dataCount) {
+                isCalculatedSize = false;
             }
         } else {
             childLayout.removeAllViews();
@@ -295,14 +259,12 @@ public class ExpandableView<T> extends LinearLayout {
     }
 
     private void initClickView() {
-        ViewHolder holder;
-        if (titleHolderList.size() == 0) {
-            holder = new ViewHolder(mInflater.inflate(mOnBindListener.addClickView(), titleLayout));
-            titleHolderList.add(holder);
-        } else {
-            holder = titleHolderList.get(0);
+        View childAt = mOnBindListener.bindTitleView(titleView);
+        if (titleView != childAt) {
+            titleLayout.removeView(titleView);
+            titleView = childAt;
+            titleLayout.addView(titleView);
         }
-        mOnBindListener.onBindClickView(holder);
     }
 
     /**
@@ -334,18 +296,17 @@ public class ExpandableView<T> extends LinearLayout {
             initValueAnimator();
         }
         expandAnimator.start();
+        View rightIcon = findViewById(rightIconViewId);
         if (rightIcon == null) {
             return;
         }
-        if (expandRotateAnimation == null) {
-            int x = rightIcon.getMeasuredWidth() / 2;
-            int y = rightIcon.getMeasuredHeight() / 2;
-            expandRotateAnimation = new RotateAnimation(0f, DEGREES, x, y);
-            expandRotateAnimation.setInterpolator(new LinearInterpolator());
-            expandRotateAnimation.setRepeatCount(Animation.ABSOLUTE);
-            expandRotateAnimation.setFillAfter(true);
-            expandRotateAnimation.setDuration(duration);
-        }
+        int x = rightIcon.getWidth() / 2;
+        int y = rightIcon.getHeight() / 2;
+        RotateAnimation expandRotateAnimation = new RotateAnimation(0f, DEGREES, x, y);
+        expandRotateAnimation.setInterpolator(new LinearInterpolator());
+        expandRotateAnimation.setRepeatCount(Animation.ABSOLUTE);
+        expandRotateAnimation.setFillAfter(true);
+        expandRotateAnimation.setDuration(duration);
         rightIcon.startAnimation(expandRotateAnimation);
     }
 
@@ -357,18 +318,17 @@ public class ExpandableView<T> extends LinearLayout {
             initValueAnimator();
         }
         collapseAnimator.start();
+        View rightIcon = findViewById(rightIconViewId);
         if (rightIcon == null) {
             return;
         }
-        if (collapseRotateAnimation == null) {
-            int x = rightIcon.getMeasuredWidth() / 2;
-            int y = rightIcon.getMeasuredHeight() / 2;
-            collapseRotateAnimation = new RotateAnimation(DEGREES, 0f, x, y);
-            collapseRotateAnimation.setInterpolator(new LinearInterpolator());
-            collapseRotateAnimation.setRepeatCount(Animation.ABSOLUTE);
-            collapseRotateAnimation.setFillAfter(true);
-            collapseRotateAnimation.setDuration(duration);
-        }
+        int x = rightIcon.getWidth() / 2;
+        int y = rightIcon.getHeight() / 2;
+        RotateAnimation collapseRotateAnimation = new RotateAnimation(DEGREES, 0f, x, y);
+        collapseRotateAnimation.setInterpolator(new LinearInterpolator());
+        collapseRotateAnimation.setRepeatCount(Animation.ABSOLUTE);
+        collapseRotateAnimation.setFillAfter(true);
+        collapseRotateAnimation.setDuration(duration);
         rightIcon.startAnimation(collapseRotateAnimation);
     }
 
@@ -393,7 +353,7 @@ public class ExpandableView<T> extends LinearLayout {
                 isAnimating = false;
                 if (!status) {
                     if (mOnBindListener.expandableUpDataView()) {
-                        expandableUpdataView();
+                        expandableUpdateView();
                     }
                 } else {
                     adjustItemPosIfHidden();
@@ -404,7 +364,7 @@ public class ExpandableView<T> extends LinearLayout {
             public void onAnimationStart(Animator animator) {
                 isAnimating = true;
                 if (status && mOnBindListener.expandableUpDataView()) {
-                    expandableUpdataView();
+                    expandableUpdateView();
                 }
             }
         });
@@ -452,7 +412,7 @@ public class ExpandableView<T> extends LinearLayout {
     /**
      * 重新刷新列表数据
      */
-    private void expandableUpdataView() {
+    private void expandableUpdateView() {
         initClickView();
         initChildView();
     }
@@ -465,55 +425,31 @@ public class ExpandableView<T> extends LinearLayout {
     }
 
     /**
-     * 初始化测量
-     */
-    void initLayout() {
-        isCalculatedSize = false;
-    }
-
-    /**
      * 需要实现的接口
      */
     public interface OnBindListener<T> {
-        //添加头部点击的view
-        int addClickView();
-
-        // 绑定头部view数据
-        void onBindClickView(ViewHolder clickHolder);
-
-        //添加子view
-        int addChildView();
-
-        // 绑定子view数据
-        void onBindChildView(int childPos, int childCount, T t, ViewHolder childHolder);
-
-        //是否打开关闭 更新数据 改动UI的显示
-        boolean expandableUpDataView();
-    }
-
-    public static class ViewHolder {
-        private View              mConvertView;
-        private SparseArray<View> mViews;
-
-        ViewHolder(View view) {
-            this.mConvertView = view;
-            this.mViews = new SparseArray<>();
-        }
 
         /**
-         * 通过viewId获取控件
+         * 绑定头部view
          */
-        public <T extends View> T getView(int viewId) {
-            View view = mViews.get(viewId);
-            if (view == null) {
-                view = mConvertView.findViewById(viewId);
-                mViews.put(viewId, view);
-            }
-            return (T) view;
-        }
+        View bindTitleView(View titleView);
 
-        public View getConvertView() {
-            return mConvertView;
-        }
+        /**
+         * 绑定子View
+         */
+        View bindChildView(int childPos, View child);
+
+        /**
+         * return true 每次点击都会重新调用 bindTitleView bindChildView
+         */
+        boolean expandableUpDataView();
+
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        expandAnimator.cancel();
+        collapseAnimator.cancel();
     }
 }

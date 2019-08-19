@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="expandableView">
+    <declare-styleable name="ExpandableView">
         <!--列表展开头部 位置-->
         <attr name="exp_mobile" format="enum">
             <!--在上面-->

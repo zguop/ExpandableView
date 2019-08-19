@@ -3,10 +3,10 @@ package view.waitou.expandableview;
 import android.content.Context;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -20,8 +20,8 @@ import view.waitou.explibrary.ExpandableView;
 public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<QueryInfo> mInfos;
-    private LayoutInflater  mInflater;
-    private Context         mContext;
+    private LayoutInflater mInflater;
+    private Context mContext;
 
 
     public ExpandableViewAdapter(Context context, List<QueryInfo> infos) {
@@ -37,48 +37,51 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder,  int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         final ViewHolder holder1 = (ViewHolder) holder;
         final QueryInfo queryInfo = mInfos.get(holder1.getAdapterPosition());
 
-        holder1.mExpandingList.setAdapter(queryInfo.uniques, new ExpandableView.OnBindListener<UniquesInfo>() {
-            @Override
-            public int addClickView() {
-                return R.layout.item_expanble_querycar;
-            }
+        if(position == 2){
+            ((ViewHolder) holder).mExpandingList.setKeepChild(1);
+        }
+
+        holder1.mExpandingList.setAdapter(queryInfo.uniques.size(), new ExpandableView.OnBindListener<UniquesInfo>() {
 
             @Override
-            public void onBindClickView(ExpandableView.ViewHolder clickHolder) {
-                ImageView view = clickHolder.getView(R.id.iv_arrow);
-                TextView textView = clickHolder.getView(R.id.tv);
-                View lineView = clickHolder.getView(R.id.line_view);
+            public View bindTitleView(View titleView) {
+                Log.e("aa" , " titleView " + titleView);
 
+                if (titleView == null) {
+                    titleView = View.inflate(mContext, R.layout.item_expanble_querycar, null);
+                }
+                holder1.mExpandingList.setArrowAnimationView(R.id.iv_arrow);
+                TextView textView = titleView.findViewById(R.id.tv);
                 textView.setText(queryInfo.name);
-
-                holder1.mExpandingList.setArrorAnimationView(view);
-
+                View lineView = titleView.findViewById(R.id.line_view);
                 if (holder1.getAdapterPosition() == getItemCount() - 1 && !holder1.mExpandingList.isExpandable()) {
                     lineView.setVisibility(View.GONE);
                 } else {
                     lineView.setVisibility(View.VISIBLE);
                 }
+                return titleView;
             }
 
             @Override
-            public int addChildView() {
-                return R.layout.item_expanble_caruniques;
-            }
+            public View bindChildView(int childPos, View child) {
+                Log.e("aa" , " child " + child);
+                if(child == null){
+                    child = View.inflate(mContext,R.layout.item_expanble_caruniques,null);
+                }
+                TextView tvRight = child.findViewById(R.id.tv_right);
+                TextView tvLeft = child.findViewById(R.id.tv_left);
+                View lineView = child.findViewById(R.id.line_view);
 
-            @Override
-            public void onBindChildView(int contentPos, int contentCount, UniquesInfo uniquesInfo, ExpandableView.ViewHolder holder) {
-                TextView tvRight = holder.getView(R.id.tv_right);
-                TextView tvLeft = holder.getView(R.id.tv_left);
-                View lineView = holder.getView(R.id.line_view);
-                if (holder1.getAdapterPosition() != getItemCount() - 1 && contentPos == contentCount - 1) {
+                if (holder1.getAdapterPosition() != getItemCount() - 1 && childPos == queryInfo.uniques.size() - 1) {
                     lineView.setVisibility(View.VISIBLE);
                 } else {
                     lineView.setVisibility(View.GONE);
                 }
+                UniquesInfo uniquesInfo = queryInfo.uniques.get(childPos);
                 boolean delivered = uniquesInfo.delivered;
                 if (!delivered) {
                     tvRight.setText("呵呵哒");
@@ -86,6 +89,7 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     tvLeft.setTextColor(ActivityCompat.getColor(mContext, R.color.orange_FF8903));
                 }
                 tvLeft.setText(uniquesInfo.snap);
+                return child;
             }
 
             @Override

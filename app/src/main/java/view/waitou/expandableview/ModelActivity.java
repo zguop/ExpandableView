@@ -4,7 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ImageView;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,39 +28,37 @@ public class ModelActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_model);
-        mExpandableView = (ExpandableView) findViewById(R.id.expan);
+        mExpandableView = findViewById(R.id.expan);
 
         init();
 
+        mExpandableView.setAdapter(mInfos.size(), new ExpandableView.OnBindListener<QueryInfo>() {
 
-        mExpandableView.setAdapter(mInfos, new ExpandableView.OnBindListener<QueryInfo>() {
             @Override
-            public int addClickView() {
-                return R.layout.item_expenable;
+            public View bindTitleView(View titleView) {
+                if(titleView == null){
+                    titleView = View.inflate(ModelActivity.this,R.layout.item_expenable,null);
+                    titleView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                }
+                mExpandableView.setArrowAnimationView(R.id.btn_fold);
+                return titleView;
             }
 
             @Override
-            public void onBindClickView(ExpandableView.ViewHolder clickHolder) {
-                ImageView view = clickHolder.getView(R.id.btn_fold);
-                mExpandableView.setArrorAnimationView(view);
-            }
-
-            @Override
-            public int addChildView() {
-                return R.layout.item_expanble_caruniques;
-            }
-
-            @Override
-            public void onBindChildView(int contentPos, int contentCount, QueryInfo queryInfo, ExpandableView.ViewHolder holder) {
-                TextView tvRight = holder.getView(R.id.tv_right);
-                TextView tvLeft = holder.getView(R.id.tv_left);
-                boolean delivered = queryInfo.finished;
+            public View bindChildView(int childPos, View child) {
+                if(child == null){
+                    child = View.inflate(ModelActivity.this,R.layout.item_expanble_caruniques,null);
+                }
+                TextView tvRight = child.findViewById(R.id.tv_right);
+                TextView tvLeft = child.findViewById(R.id.tv_left);
+                boolean delivered = mInfos.get(childPos).finished;
                 if (!delivered) {
                     tvRight.setText("呵呵哒");
                     tvRight.setTextColor(ActivityCompat.getColor(ModelActivity.this, R.color.orange_FF8903));
                     tvLeft.setTextColor(ActivityCompat.getColor(ModelActivity.this, R.color.orange_FF8903));
                 }
-                tvLeft.setText(queryInfo.name);
+                tvLeft.setText(mInfos.get(childPos).name);
+                return child;
             }
 
             @Override
