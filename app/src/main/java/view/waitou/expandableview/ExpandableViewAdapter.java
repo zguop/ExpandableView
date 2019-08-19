@@ -45,12 +45,11 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((ViewHolder) holder).mExpandingList.setKeepChild(1);
         }
 
-        holder1.mExpandingList.setAdapter(queryInfo.uniques.size(), new ExpandableView.OnBindListener<UniquesInfo>() {
+        holder1.mExpandingList.setAdapter(queryInfo.uniques.size(), new ExpandableView.OnBindListener() {
 
             @Override
             public View bindTitleView(View titleView) {
                 Log.e("aa" , " titleView " + titleView);
-
                 if (titleView == null) {
                     titleView = View.inflate(mContext, R.layout.item_expanble_querycar, null);
                 }

@@ -32,7 +32,7 @@ public class ModelActivity extends AppCompatActivity {
 
         init();
 
-        mExpandableView.setAdapter(mInfos.size(), new ExpandableView.OnBindListener<QueryInfo>() {
+        mExpandableView.setAdapter(mInfos.size(), new ExpandableView.OnBindListener() {
 
             @Override
             public View bindTitleView(View titleView) {

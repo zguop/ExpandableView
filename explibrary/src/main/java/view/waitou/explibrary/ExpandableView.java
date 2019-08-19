@@ -427,7 +427,7 @@ public class ExpandableView extends LinearLayout {
     /**
      * 需要实现的接口
      */
-    public interface OnBindListener<T> {
+    public interface OnBindListener {
 
         /**
          * 绑定头部view
