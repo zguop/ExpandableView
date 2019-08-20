@@ -31,6 +31,12 @@ public class ExpandableViewAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
 
+    public void addData(List<QueryInfo> mInfos){
+        this.mInfos = mInfos;
+        notifyDataSetChanged();
+    }
+
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(mInflater.inflate(R.layout.item_expanble_recycle, parent, false));

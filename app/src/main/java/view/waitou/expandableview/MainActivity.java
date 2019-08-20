@@ -13,10 +13,11 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[]        modelName = {"ALFA", "V8", "CM", "DPPPP"};
-    private String[]        uniques   = {"444", "AAA", "BBBB", "444", "444", "444"};
-    private List<QueryInfo> mInfos    = new ArrayList<>();
+    private String[] modelName = {"ALFA", "V8", "CM", "DPPPP"};
+    private String[] uniques = {"444", "AAA", "BBBB", "444", "444", "444"};
+    private List<QueryInfo> mInfos = new ArrayList<>();
     private RecyclerView mRecyclerView;
+    private ExpandableViewAdapter expandableViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +31,37 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        findViewById(R.id.btn1).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<UniquesInfo> uniques = mInfos.get(0).uniques;
+                UniquesInfo uniquesInfo = new UniquesInfo();
+                uniquesInfo.snap = "添加的";
+                uniques.add(uniquesInfo);
+                expandableViewAdapter.addData(mInfos);
+            }
+        });
+
+        findViewById(R.id.btn2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<UniquesInfo> uniques = mInfos.get(0).uniques;
+                uniques.remove(uniques.size() - 1);
+                expandableViewAdapter.addData(mInfos);
+            }
+        });
+
+
         mRecyclerView = (RecyclerView) findViewById(R.id.list);
         init();
         bindView();
     }
 
     private void bindView() {
+        expandableViewAdapter = new ExpandableViewAdapter(this, mInfos);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new ExpandableViewAdapter(this, mInfos));
+        mRecyclerView.setAdapter(expandableViewAdapter);
     }
 
     private void init() {

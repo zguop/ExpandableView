@@ -9,13 +9,14 @@
 Then, add the library to your module `build.gradle`
 ```gradle
 dependencies {
-	 compile 'com.to.aboomy:explibrary:2.0.1'
+	 compile 'com.to.aboomy:explibrary:2.0.2'
 }
 ```
 
 ### 使用方式
 
 ```groovy
+    
     final ExpandableView expandableView = holder.getView(R.id.item_expanble);
     expandableView.setAdapter(queryInfo.uniques.size(), new ExpandableView.OnBindListener() {
 
