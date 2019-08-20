@@ -5,6 +5,10 @@
  
 [![](https://jitpack.io/v/zguop/ExpandableView.svg)](https://jitpack.io/#zguop/ExpandableView)
 
+### 效果图：
+
+![这里写图片描述](Untitled20.gif)    ![这里写图片描述](Untitled21.gif)
+
 
 Then, add the library to your module `build.gradle`
 ```gradle
@@ -50,8 +54,3 @@ dependencies {
     }
 });
 ```
-### 效果图：
-
-![这里写图片描述](Untitled20.gif)    ![这里写图片描述](Untitled21.gif)
-
-
