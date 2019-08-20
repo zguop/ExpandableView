@@ -12,9 +12,6 @@ dependencies {
 	 compile 'com.to.aboomy:explibrary:2.0.2'
 }
 ```
-### 特点
-* UI完全自定义 
-
 ### 使用方式
 
 ```groovy
